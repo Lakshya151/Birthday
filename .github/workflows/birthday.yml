@@ -2,7 +2,10 @@ name: Birthday Reminder
 
 on:
   schedule:
+    # Runs every day at 9:00 AM IST (03:30 UTC)
     - cron: "30 3 * * *"
+
+  # Allows you to run it manually from GitHub Actions
   workflow_dispatch:
 
 jobs:
@@ -20,6 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Create private birthdays.csv
+        env:
+          BIRTHDAYS_CSV: ${{ secrets.BIRTHDAYS_CSV }}
+        run: |
+          printf '%s' "$BIRTHDAYS_CSV" | base64 --decode > birthdays.csv
 
       - name: Run birthday reminder
         env:
